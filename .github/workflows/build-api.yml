@@ -1,4 +1,4 @@
-name: API
+name: Build API & Unit Test
 
 on: [pull_request]
 

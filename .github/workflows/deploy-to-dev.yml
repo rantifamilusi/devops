@@ -1,0 +1,29 @@
+name: Build & Push Image
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-image-weather-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and push
+        working-directory: ./SampleApp/SampleApp.Api
+        env:
+          COMPOSE_DOCKER_CLI_BUILD: 1
+          DOCKER_BUILDKIT: 1
+          IMAGE: ibmdevopsdemo.azurecr.io/weather-api:dev.v${{github.run_number}}
+          IMAGE_LATEST: ibmdevopsdemo.azurecr.io/weather-api:latest
+        run: |
+          docker build \
+            --tag ${IMAGE} \
+            --tag ${IMAGE_LATEST} \
+            .
+            docker login myregistry.azurecr.io --username $DEV_ACR_SP_ID --password $DEV_ACR_SP_PASSWORD
+            docker push ${IMAGE}
+            docker push ${IMAGE_LATEST}
+  deploy_in_azure_with_terraform:
+    needs: [build-image-weather-api]
+    uses: ./.github/workflows/terraform-apply.yml
