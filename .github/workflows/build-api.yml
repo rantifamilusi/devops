@@ -1,0 +1,20 @@
+name: API
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+      - name: Build API
+        run: dotnet build --configuration Release
+        working-directory: ./SampleApp
+      - name: Check Unit Test
+        run: dotnet test
+        working-directory: ./SampleApp

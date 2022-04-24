@@ -1,0 +1,9 @@
+# Add 'Weather App UI'
+'Weather App UI':
+  - SampleApp/SampleApp.UI/**/*
+
+# Add 'Weather Service API' 
+'Weather Service API':
+  - SampleApp/SampleApp.Api/**/*
+  - SampleApp/SampleApp.Tests/**/*
+
