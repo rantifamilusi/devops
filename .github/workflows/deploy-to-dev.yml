@@ -1,9 +1,10 @@
 name: Build & Push Image
 
 on:
-  push:
-    branches:
-      - dev
+  pull_request:
+  # push:
+  #   branches:
+  #     - dev
 
 jobs:
   build-image-weather-api:
