@@ -1,0 +1,124 @@
+# This workflow is executed when there is a pull request for the dev branch
+
+#name: 'Terraform Plan'
+#on:
+#  pull_request:
+#    branches:
+#      - dev
+
+# Uncomment for manual run of this Terraform Plan workflow
+on: [workflow_dispatch]
+
+jobs:
+  # First job starts to get the current branch name so we can set the environment variable
+  Get-Branch-Name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get branch name
+        run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+        id: branch_check
+
+      # Display what branch name we retrieved for the variable
+      - name: Use variable setup in previous step
+        run: echo "Retrieved the branch name ${{ steps.branch_check.outputs.branch }}"
+
+    # Setting the branch variable so we can use it in the next job
+    outputs:
+      branch: ${{ steps.branch_check.outputs.branch }}
+
+  # Second job starts for Terraform
+  validate-terraform:
+    needs: Get-Branch-Name
+    name: 'Terraform plan'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    environment: ${{ needs.Get-Branch-Name.outputs.branch }}
+
+    steps:
+      # Display the branch name from previous job and the branch full path with github.ref variable
+      - run: echo "Working on ${{ needs.Get-Branch-Name.outputs.branch }} branch"
+      - run: echo Working on full path ${{github.ref}} branch
+
+      - name: Checkout GitHub Actions
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: HashiCorp - Setup Terraform
+        uses: hashicorp/setup-terraform@v1.2.1
+        with:
+          terraform_version: 1.0.9
+          terraform_wrapper: false
+
+      - name: Terraform Format
+        id: fmt
+        run: |
+          terraform fmt -check
+        working-directory: './infrastructure'
+
+# Terraform Init, Validate, and Plan for Dev Environment
+      - name: Terraform Dev Init
+        id: tf_init_dev
+        run: |
+          terraform init \
+            -reconfigure \
+            -backend-config="storage_account_name=${{ secrets.DEV_STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ secrets.DEV_STORAGE_CONTAINER_NAME }}" \
+            -backend-config="key=terraform.tfstate" \
+            -backend-config="access_key=${{ secrets.DEV_STORAGE_ACCESS_KEY }}"
+        if: github.ref == 'refs/heads/dev'
+        working-directory: './infrastructure'
+
+      - name: Terraform Dev Validate
+        id: tf_validate_dev
+        run: |
+          terraform validate -no-color
+        if: github.ref == 'refs/heads/dev'
+        working-directory: './infrastructure'
+
+      - name: Terraform Dev Plan
+        id: tf_plan_dev
+        run: |
+          export TF_VAR_client_id=${{ secrets.DEV_ARM_CLIENT_ID }}
+          export TF_VAR_client_secret=${{ secrets.DEV_ARM_CLIENT_SECRET }}
+          export TF_VAR_tenant_id=${{ secrets.DEV_ARM_TENANT_ID }}
+          export TF_VAR_subscription_id=${{ secrets.DEV_ARM_SUBSCRIPTION_ID }}
+          export TF_VAR_admin_login=${{ secrets.DEV_PSQL_ADMINISTRATOR_LOGIN_PASSWORD }}
+          export TF_VAR_administrator_login_password=${{ secrets.DEV_PSQL_ADMIN_LOGIN }}
+          terraform plan --var-file=terraform-dev.tfvars -no-color -out=plan.tfdata
+        if: github.ref == 'refs/heads/dev'
+        working-directory: './infrastructure'
+
+# Terraform Init, Validate, and Plan for Main Environment
+      - name: Terraform Main Init
+        id: tf_init_Main
+        run: |
+          terraform init \
+            -reconfigure \
+            -backend-config="storage_account_name=${{ secrets.Main_STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ secrets.Main_STORAGE_CONTAINER_NAME }}" \
+            -backend-config="key=terraform.tfstate" \
+            -backend-config="access_key=${{ secrets.Main_STORAGE_ACCESS_KEY }}"
+        if: github.ref == 'refs/heads/main'
+        working-directory: './infrastructure'
+
+      - name: Terraform Main Validate
+        id: tf_validate_Main
+        run: |
+          terraform validate -no-color
+        if: github.ref == 'refs/heads/main'
+        working-directory: './infrastructure'
+
+      - name: Terraform Main Plan
+        id: tf_plan_Main
+        run: |
+          export TF_VAR_client_id=${{ secrets.Main_ARM_CLIENT_ID }}
+          export TF_VAR_client_secret=${{ secrets.Main_ARM_CLIENT_SECRET }}
+          export TF_VAR_tenant_id=${{ secrets.Main_ARM_TENANT_ID }}
+          export TF_VAR_subscription_id=${{ secrets.Main_ARM_SUBSCRIPTION_ID }}
+          export TF_VAR_admin_login=${{ secrets.Main_PSQL_ADMINISTRATOR_LOGIN_PASSWORD }}
+          export TF_VAR_administrator_login_password=${{ secrets.Main_PSQL_ADMIN_LOGIN }}
+          terraform plan --var-file=terraform-Main.tfvars -no-color
+        if: github.ref == 'refs/heads/main'
+        working-directory: './infrastructure'
