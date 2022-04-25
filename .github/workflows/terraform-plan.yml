@@ -1,6 +1,6 @@
 # This workflow is executed when there is a pull request for the dev branch
 
-#name: 'Terraform Plan'
+name: 'Terraform Plan'
 #on:
 #  pull_request:
 #    branches:
