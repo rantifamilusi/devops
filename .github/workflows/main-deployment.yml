@@ -1,0 +1,17 @@
+name: Build & Push Image
+
+on:
+  pull_request:
+  # push:
+  #   branches:
+  #     - dev
+
+jobs:
+  build-api-image-push-to-acr:
+    uses: /.github/workflows/build-dev-image.yml
+  deploy-infra-with-terraform:
+    needs: [build-api-image-push-to-acr]
+    uses: ./.github/workflows/terraform-apply.yml
+  deploy-app-in-k8s:
+    needs: [deploy-infra-with-terraform]
+    uses: ./.github/workflows/terraform-apply.yml

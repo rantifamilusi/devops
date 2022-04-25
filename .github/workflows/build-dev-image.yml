@@ -1,7 +1,7 @@
 name: Build & Push Image
 
 on:
-  pull_request:
+  workflow_call:
   # push:
   #   branches:
   #     - dev
@@ -9,8 +9,16 @@ on:
 jobs:
   build-image-weather-api:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Build and push
+      - uses: actions/checkout@v1
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ibmdevopsdemo.azurecr.io
+          username: ${{secrets.DEV_ACR_SP_ID}}
+          password: ${{secrets.DEV_ACR_SP_PASSWORD}}
+      - name: Build and push to ACR
+        id: build-image
         working-directory: ./SampleApp/SampleApp.Api
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
@@ -22,9 +30,5 @@ jobs:
             --tag ${IMAGE} \
             --tag ${IMAGE_LATEST} \
             .
-            docker login myregistry.azurecr.io --username $DEV_ACR_SP_ID --password $DEV_ACR_SP_PASSWORD
             docker push ${IMAGE}
             docker push ${IMAGE_LATEST}
-  deploy_in_azure_with_terraform:
-    needs: [build-image-weather-api]
-    uses: ./.github/workflows/terraform-apply.yml
