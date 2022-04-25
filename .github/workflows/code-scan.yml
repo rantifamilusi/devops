@@ -1,5 +1,7 @@
 name: Code Quality & Vunerability Scan
 on:
+  push:
+    branches: [dev]
   pull_request:
 jobs:
   build:
