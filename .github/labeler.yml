@@ -7,3 +7,7 @@
   - SampleApp/SampleApp.Api/**/*
   - SampleApp/SampleApp.Tests/**/*
 
+# DevOps' 
+'DevOps':
+  - .github/**/*
+
