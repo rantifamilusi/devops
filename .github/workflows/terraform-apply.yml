@@ -1,10 +1,8 @@
 # This workflow is triggered whenever a successful Pull Request (merge) is completed on the stg and pro branch
 
 name: 'Terraform Apply'
-on:
-  pull_request:
-    branches:
-      - prod
+ on: [workflow_call]
+
 # Uncomment for manual run of this Terraform Plan workflow
 # on: [workflow_dispatch]
 

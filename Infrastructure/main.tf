@@ -25,7 +25,7 @@ module "setup_azure_kubernetes" {
   k8s_version             = var.k8s_version
   k8s_type                = var.k8s_type
 }
-
+/*
 # Module for deploying Azure Container Registry
 module "setup_container_registry" {
   source                  = "github.com/terenceluk/terraform-modules//Modules/ACR" # Public repository with subfolders - note the //
@@ -33,7 +33,7 @@ module "setup_container_registry" {
   resource_group_name     = var.resource_group_name
   resource_group_location = var.resource_group_location
 }
-
+*/
 # Module for deploying Azure Database for PostgreSQL servers 
 module "setup_db_postgresql" {
   source                        = "github.com/terenceluk/terraform-modules//Modules/PostgreSQL" # Public repository with subfolders - note the //
