@@ -40,7 +40,9 @@ jobs:
         id: fmt
         run: |
           terraform fmt -check
-        working-directory: '.'
+        working-directory: '/infrastructure'
+
+
 
 # Terraform Init, Validate, Plan, and Apply Main Environment
       - name: Terraform Main Init
@@ -53,14 +55,18 @@ jobs:
             -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.Main_STORAGE_ACCESS_KEY }}"
         if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '.' # This terraform init will use a preconfigured Azure storage account to store the tfstate
+        working-directory: '/infrastructure'
+
+ # This terraform init will use a preconfigured Azure storage account to store the tfstate
 
       - name: Terraform Main Validate
         id: tf_validate_Main
         run: |
           terraform validate -no-color
         if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '.'
+        working-directory: '/infrastructure'
+
+
 
       - name: Terraform Main Plan
         id: tf_plan_Main
@@ -73,9 +79,12 @@ jobs:
           export TF_VAR_administrator_login_password=${{ secrets.Main_PSQL_ADMIN_LOGIN }}
           terraform plan --var-file=terraform-Main.tfvars -no-color -out=plan.tfdata
         if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '.' # This terraform plan exports the GitHub secrets and uses TF_VAR so the terraform files can use the variable values. The plan is also output to plan.tfdata for apply later
+        working-directory: '/infrastructure'
+
+ # This terraform plan exports the GitHub secrets and uses TF_VAR so the terraform files can use the variable values. The plan is also output to plan.tfdata for apply later
 
       - name: Terraform Apply
         run: terraform apply -auto-approve plan.tfdata # Use the previous terraform plan output to apply
         if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '.'
+        working-directory: '/infrastructure'
+
