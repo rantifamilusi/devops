@@ -1,13 +1,13 @@
-# This workflow is executed whenever any files not ignored is pushed into GitHub, it will also trigger the terraform-apply-dev.yml to deploy the dev environment
+# This workflow is executed when there is a pull request for the dev branch
 
-name: 'Terraform Plan'
-on:
-  pull_request:
-    branches:
-      - dev
+#name: 'Terraform Plan'
+#on:
+#  pull_request:
+#    branches:
+#      - dev
 
 # Uncomment for manual run of this Terraform Plan workflow
-#on: [workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:
   # First job starts to get the current branch name so we can set the environment variable

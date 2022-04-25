@@ -5,12 +5,12 @@ Terraform uses this during the module installation step of terraform init to dow
 #
 # Module for deploying Azure Kubernetes
 module "setup_azure_kubernetes" {
-  source                  = "github.com/terenceluk/terraform-modules//Modules/AKS" # Public repository with subfolders - note the //
+  source                  = "github.com/terenceluk/terraform-modules//Modules/AKS?ref=v1.0" # Public repository with subfolders - note the //
   cluster_name            = var.cluster_name
   enable_auto_scaling     = var.enable_auto_scaling
   resource_group_name     = var.resource_group_name
   resource_group_location = var.resource_group_location
-  dns_prefix              = "${var.environment}-${var.dns_prefix}" # Uses the values defined in .tfvars so the dev, stg, and prod environments have unique K8s dns_prefixes
+  dns_prefix              = "${var.environment}-${var.dns_prefix}" # Uses the values defined in .tfvars so the dev, stg, and Main environments have unique K8s dns_prefixes
   node_pool_name          = var.node_pool_name
   node_pool_count         = var.node_pool_count
   node_pool_vm_size       = var.node_pool_vm_size
@@ -19,16 +19,17 @@ module "setup_azure_kubernetes" {
   node_pool_min_count     = var.node_pool_min_count
   network_plugin          = var.network_plugin
   load_balancer_sku       = var.load_balancer_sku
-  env                     = var.environment # Pass the environment dev, stg or prod so it can be used to tag Azure resource
+  env                     = var.environment # Pass the environment dev, stg or Main so it can be used to tag Azure resource
   client_id               = var.client_id
   client_secret           = var.client_secret
   k8s_version             = var.k8s_version
   k8s_type                = var.k8s_type
 }
-/*
+/* Ranti will be deploying his ACR prior to running Terraform
+
 # Module for deploying Azure Container Registry
 module "setup_container_registry" {
-  source                  = "github.com/terenceluk/terraform-modules//Modules/ACR" # Public repository with subfolders - note the //
+  source                  = "github.com/terenceluk/terraform-modules//Modules/ACR?ref=v1.0" # Public repository with subfolders - note the //
   acr_name                = var.acr_name
   resource_group_name     = var.resource_group_name
   resource_group_location = var.resource_group_location
@@ -36,7 +37,7 @@ module "setup_container_registry" {
 */
 # Module for deploying Azure Database for PostgreSQL servers 
 module "setup_db_postgresql" {
-  source                        = "github.com/terenceluk/terraform-modules//Modules/PostgreSQL" # Public repository with subfolders - note the //
+  source                        = "github.com/terenceluk/terraform-modules//Modules/PostgreSQL?ref=v1.0" # Public repository with subfolders - note the //
   sql_name                      = var.sql_name
   server_version                = var.server_version
   resource_group_name           = var.resource_group_name
