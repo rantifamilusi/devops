@@ -11,3 +11,7 @@
 'DevOps':
   - .github/**/*
 
+# Terraform Infrastructures' 
+'Terraform Infrastructures':
+  - Infrastructure/**/*
+
