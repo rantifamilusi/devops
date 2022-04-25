@@ -14,4 +14,4 @@ jobs:
     uses: ./.github/workflows/terraform-apply.yml
   deploy-app-in-k8s:
     needs: [deploy-infra-with-terraform]
-    uses: ./.github/workflows/terraform-apply.yml
+    uses: ./.github/workflows/k8s-deploy.yml
