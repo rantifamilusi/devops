@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - main
 jobs:
   build-api-image-push-to-acr:
     uses: ./.github/workflows/build-dev-image.yml
@@ -26,3 +27,9 @@ jobs:
   deploy-app-in-k8s:
     needs: [deploy-infra-with-terraform]
     uses: ./.github/workflows/k8s-deploy.yml
+    secrets:
+      DEV_ACR_SP_ID: ${{ secrets.DEV_ACR_SP_ID }}
+      DEV_ACR_SP_PASSWORD: ${{ secrets.DEV_ACR_SP_PASSWORD }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
