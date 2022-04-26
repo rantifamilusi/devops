@@ -25,4 +25,6 @@ spec:
         - image: ibmdevopsdemo.azurecr.io/weather-api:latest
           name: weather-api
           imagePullPolicy: Always
+      imagePullSecrets:
+        - name: acr-secret-name
       restartPolicy: Always
