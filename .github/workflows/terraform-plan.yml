@@ -55,7 +55,7 @@ jobs:
         id: fmt
         run: |
           terraform fmt -check
-        working-directory: '/Infrastructure'
+        working-directory: './Infrastructure'
 
 # Terraform Init, Validate, and Plan for Dev Environment
       - name: Terraform Dev Init
@@ -68,14 +68,14 @@ jobs:
             -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.DEV_STORAGE_ACCESS_KEY }}"
         if: github.ref == 'refs/heads/dev'
-        working-directory: '/Infrastructure'
+        working-directory: './Infrastructure'
 
       - name: Terraform Dev Validate
         id: tf_validate_dev
         run: |
           terraform validate -no-color
         if: github.ref == 'refs/heads/dev'
-        working-directory: '/Infrastructure'
+        working-directory: './Infrastructure'
 
       - name: Terraform Dev Plan
         id: tf_plan_dev
@@ -88,7 +88,7 @@ jobs:
           export TF_VAR_administrator_login_password=${{ secrets.DEV_PSQL_ADMIN_LOGIN }}
           terraform plan --var-file=terraform-dev.tfvars -no-color -out=plan.tfdata
         if: github.ref == 'refs/heads/dev'
-        working-directory: '/Infrastructure'
+        working-directory: './Infrastructure'
 
 # Terraform Init, Validate, and Plan for Main Environment
       - name: Terraform Main Init
@@ -101,14 +101,14 @@ jobs:
             -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.Main_STORAGE_ACCESS_KEY }}"
         if: github.ref == 'refs/heads/main'
-        working-directory: '/Infrastructure'
+        working-directory: './Infrastructure'
 
       - name: Terraform Main Validate
         id: tf_validate_Main
         run: |
           terraform validate -no-color
         if: github.ref == 'refs/heads/main'
-        working-directory: '/Infrastructure'
+        working-directory: './Infrastructure'
 
       - name: Terraform Main Plan
         id: tf_plan_Main
@@ -121,4 +121,4 @@ jobs:
           export TF_VAR_administrator_login_password=${{ secrets.Main_PSQL_ADMIN_LOGIN }}
           terraform plan --var-file=terraform-Main.tfvars -no-color
         if: github.ref == 'refs/heads/main'
-        working-directory: '/Infrastructure'
+        working-directory: './Infrastructure'

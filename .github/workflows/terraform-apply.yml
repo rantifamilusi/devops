@@ -4,7 +4,7 @@ name: 'Terraform Apply'
 #on: [workflow_call]
 
 # Uncomment for manual run of this Terraform Plan workflow
-on: [workflow_dispatch]
+on: [workflow_call]
 
 jobs:
   deploy-to-azure:
@@ -50,12 +50,12 @@ jobs:
         run: |
           terraform init \
             -reconfigure \
-            -backend-config="storage_account_name=${{ secrets.Main_STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="storage_account_name=${{ secrets.DEV_STORAGE_ACCOUNT_NAME }}" \
             -backend-config="container_name=${{ secrets.Main_STORAGE_CONTAINER_NAME }}" \
             -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.Main_STORAGE_ACCESS_KEY }}"
         if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '/infrastructure'
+        working-directory: './Infrastructure'
 
  # This terraform init will use a preconfigured Azure storage account to store the tfstate
 
@@ -64,7 +64,7 @@ jobs:
         run: |
           terraform validate -no-color
         if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '/infrastructure'
+        working-directory: './Infrastructure'
 
 
 
@@ -79,12 +79,12 @@ jobs:
           export TF_VAR_administrator_login_password=${{ secrets.Main_PSQL_ADMIN_LOGIN }}
           terraform plan --var-file=terraform-Main.tfvars -no-color -out=plan.tfdata
         if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '/infrastructure'
+        working-directory: './Infrastructure'
 
  # This terraform plan exports the GitHub secrets and uses TF_VAR so the terraform files can use the variable values. The plan is also output to plan.tfdata for apply later
 
       - name: Terraform Apply
         run: terraform apply -auto-approve plan.tfdata # Use the previous terraform plan output to apply
         if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '/infrastructure'
+        working-directory: './Infrastructure'
 
