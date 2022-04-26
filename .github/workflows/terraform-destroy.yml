@@ -26,7 +26,7 @@ jobs:
             -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.DEV_STORAGE_ACCESS_KEY }}"
         if: github.ref == 'refs/heads/dev'
-        working-directory: '/infrastructure'
+        working-directory: '/Infrastructure'
 
 
 
@@ -35,7 +35,7 @@ jobs:
         run: |
           terraform validate -no-color
         if: github.ref == 'refs/heads/dev'
-        working-directory: '/infrastructure'
+        working-directory: '/Infrastructure'
 
 
       - name: Terraform Dev Plan
@@ -49,7 +49,7 @@ jobs:
           export TF_VAR_administrator_login_password=${{ secrets.DEV_PSQL_ADMIN_LOGIN }}
           terraform plan --var-file=terraform-dev.tfvars -no-color
         if: github.ref == 'refs/heads/dev'
-        working-directory: '/infrastructure'
+        working-directory: '/Infrastructure'
 
 
 
@@ -63,7 +63,7 @@ jobs:
           export TF_VAR_administrator_login_password=${{ secrets.DEV_PSQL_ADMIN_LOGIN }}
           terraform apply -destroy -auto-approve --var-file=terraform-dev.tfvars
         if: github.ref == 'refs/heads/dev'
-        working-directory: '/infrastructure'
+        working-directory: '/Infrastructure'
 
 
 
@@ -78,7 +78,7 @@ jobs:
             -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.Main_STORAGE_ACCESS_KEY }}"
         if: github.ref == 'refs/heads/Main'
-        working-directory: '/infrastructure'
+        working-directory: '/Infrastructure'
 
 
 
@@ -87,7 +87,7 @@ jobs:
         run: |
           terraform validate -no-color
         if: github.ref == 'refs/heads/Main'
-        working-directory: '/infrastructure'
+        working-directory: '/Infrastructure'
 
 
 
@@ -102,7 +102,7 @@ jobs:
           export TF_VAR_administrator_login_password=${{ secrets.Main_PSQL_ADMIN_LOGIN }}
           terraform plan --var-file=terraform-Main.tfvars -no-color
         if: github.ref == 'refs/heads/Main'
-        working-directory: '/infrastructure'
+        working-directory: '/Infrastructure'
 
 
 
@@ -116,5 +116,5 @@ jobs:
           export TF_VAR_administrator_login_password=${{ secrets.Main_PSQL_ADMIN_LOGIN }}
           terraform apply -destroy -auto-approve --var-file=terraform-Main.tfvars
         if: github.ref == 'refs/heads/Main'
-        working-directory: '/infrastructure'
+        working-directory: '/Infrastructure'
 
