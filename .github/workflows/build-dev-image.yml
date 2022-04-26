@@ -26,7 +26,7 @@ jobs:
           password: ${{secrets.DEV_ACR_SP_PASSWORD}}
       - name: Build and push to ACR
         id: build-image
-        working-directory: /SampleApp/SampleApp.Api
+        working-directory: ./SampleApp/SampleApp.Api
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
           DOCKER_BUILDKIT: 1

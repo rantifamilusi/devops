@@ -14,6 +14,16 @@ jobs:
   deploy-infra-with-terraform:
     needs: [build-api-image-push-to-acr]
     uses: ./.github/workflows/terraform-apply.yml
+    secrets:
+      DEV_STORAGE_ACCOUNT_NAME: ${{ secrets.DEV_STORAGE_ACCOUNT_NAME }}
+      DEV_STORAGE_CONTAINER_NAME: ${{ secrets.DEV_STORAGE_CONTAINER_NAME }}
+      DEV_STORAGE_ACCESS_KEY: ${{ secrets.DEV_STORAGE_ACCESS_KEY }}
+      DEV_ARM_CLIENT_ID: ${{ secrets.DEV_ARM_CLIENT_ID }}
+      DEV_ARM_CLIENT_SECRET: ${{ secrets.DEV_ARM_CLIENT_SECRET }}
+      DEV_ARM_TENANT_ID: ${{ secrets.DEV_ARM_TENANT_ID }}
+      DEV_ARM_SUBSCRIPTION_ID: ${{ secrets.DEV_ARM_SUBSCRIPTION_ID }}
+      DEV_PSQL_ADMIN_LOGIN: ${{ secrets.DEV_PSQL_ADMIN_LOGIN }} 
+      DEV_PSQL_ADMINISTRATOR_LOGIN_PASSWORD: ${{ secrets.DEV_PSQL_ADMINISTRATOR_LOGIN_PASSWORD }} 
   deploy-app-in-k8s:
     needs: [deploy-infra-with-terraform]
     uses: ./.github/workflows/k8s-deploy.yml
