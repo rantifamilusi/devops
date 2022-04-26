@@ -1,0 +1,57 @@
+name: Deploy to K8s
+
+on:
+  workflow_call:
+  # push:
+  #   branches:
+  #     - dev
+env:
+  REGISTRY_NAME: ibmdevopsdemo
+  CLUSTER_NAME: ca-cn-dev-aks
+  CLUSTER_RESOURCE_GROUP: ca-cn-dev-demo-rg
+  NAMESPACE: development
+  SECRET: acr-secret-name
+  APP_NAME: weather-api
+
+jobs:
+  deploy-app-in-k8s:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v1
+      - uses: azure/docker-login@v1
+        name: Login to ACR
+        with:
+          login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
+          username: ${{secrets.DEV_ACR_SP_ID}}
+          password: ${{secrets.DEV_ACR_SP_PASSWORD}}
+      - uses: azure/aks-set-context@v1
+        name: Set Context for AKS & Create Namespace
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}    
+      - run: |
+              kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o json | kubectl apply -f -
+      - uses: azure/k8s-create-secret@v1
+        name: Create k8s Secret For Deployment
+        with:
+          container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
+          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          secret-name: ${{ env.SECRET }}
+          namespace: ${{ env.NAMESPACE }}
+          arguments: --force true
+      
+      # Deploy app to AKS
+      - uses: azure/k8s-deploy@v1
+        with:
+          manifests: |
+            ${{ github.workspace }}/manifests/deployment.yaml
+            ${{ github.workspace }}/manifests/service.yaml
+            ${{ github.workspace }}/manifests/ingress.yaml
+          images: |
+            ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:latest
+          imagepullsecrets: |
+            ${{ env.SECRET }}
+          namespace: ${{ env.NAMESPACE }}

@@ -7,3 +7,14 @@
   - SampleApp/SampleApp.Api/**/*
   - SampleApp/SampleApp.Tests/**/*
 
+# DevOps' 
+'DevOps':
+  - .github/**/*
+
+# Terraform Infrastructures' 
+'Terraform Infrastructures':
+  - Infrastructure/**/*
+
+# Deploy in k8s' 
+'k8s Config':
+  - manifest/**/*

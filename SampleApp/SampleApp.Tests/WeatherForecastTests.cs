@@ -50,5 +50,12 @@ namespace SampleApp.Tests
             var response = await _client.GetAsync("/weatherforecast");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
+
+        [Fact]
+        public async Task GET_retrieves_weather_forecast_fail()
+        {
+            var response = await _client.GetAsync("/weatherforecast");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
     }
 }

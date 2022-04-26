@@ -4,7 +4,7 @@ name: 'Terraform Apply'
 #on: [workflow_call]
 
 # Uncomment for manual run of this Terraform Plan workflow
-on: [workflow_dispatch]
+on: [workflow_call]
 
 jobs:
   deploy-to-azure:
