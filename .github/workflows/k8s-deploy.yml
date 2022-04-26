@@ -2,6 +2,18 @@ name: Deploy to K8s
 
 on:
   workflow_call:
+    secrets:
+      DEV_ACR_SP_ID:
+        required: true
+      DEV_ACR_SP_PASSWORD:
+        required: true
+      AZURE_CREDENTIALS:
+        required: true
+      REGISTRY_USERNAME:
+        required: true
+      REGISTRY_PASSWORD:
+        required: true
+
   # push:
   #   branches:
   #     - dev
