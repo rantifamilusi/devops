@@ -1,0 +1,20 @@
+# Add 'Weather App UI'
+'Weather App UI':
+  - SampleApp/SampleApp.UI/**/*
+
+# Add 'Weather Service API' 
+'Weather Service API':
+  - SampleApp/SampleApp.Api/**/*
+  - SampleApp/SampleApp.Tests/**/*
+
+# DevOps' 
+'DevOps':
+  - .github/**/*
+
+# Terraform Infrastructures' 
+'Terraform Infrastructures':
+  - Infrastructure/**/*
+
+# Deploy in k8s' 
+'k8s Config':
+  - manifest/**/*

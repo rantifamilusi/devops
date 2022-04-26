@@ -1,0 +1,41 @@
+name: Build & Push Image
+
+on:
+  workflow_call:
+    secrets:
+      DEV_ACR_SP_ID:
+        required: true
+      DEV_ACR_SP_PASSWORD:
+        required: true 
+  # push:
+  #   branches:
+  #     - dev
+env:
+  REGISTRY_NAME: ibmdevopsdemo
+  APP_NAME: weather-api
+jobs:
+  build-image-weather-api:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v1
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
+          username: ${{secrets.DEV_ACR_SP_ID}}
+          password: ${{secrets.DEV_ACR_SP_PASSWORD}}
+      - name: Build and push to ACR
+        id: build-image
+        working-directory: ./SampleApp/SampleApp.Api
+        env:
+          COMPOSE_DOCKER_CLI_BUILD: 1
+          DOCKER_BUILDKIT: 1
+          IMAGE: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:dev.v${{github.run_number}}
+          IMAGE_LATEST: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:latest
+        run: |
+          docker build \
+            --tag ${IMAGE} \
+            --tag ${IMAGE_LATEST} \
+            .
+            docker push ${IMAGE}
+            docker push ${IMAGE_LATEST}
