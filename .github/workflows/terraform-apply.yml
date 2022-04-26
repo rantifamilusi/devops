@@ -4,7 +4,27 @@ name: 'Terraform Apply'
 #on: [workflow_call]
 
 # Uncomment for manual run of this Terraform Plan workflow
-on: [workflow_call]
+on: 
+  workflow_call:
+      secrets:
+        DEV_STORAGE_ACCOUNT_NAME:
+          required: true
+        DEV_STORAGE_CONTAINER_NAME:
+          required: true
+        DEV_STORAGE_ACCESS_KEY:
+          required: true
+        DEV_ARM_CLIENT_ID:
+          required: true
+        DEV_ARM_CLIENT_SECRET:
+          required: true
+        DEV_ARM_TENANT_ID:
+          required: true
+        DEV_ARM_SUBSCRIPTION_ID:
+          required: true
+        DEV_PSQL_ADMIN_LOGIN:
+          required: true
+        DEV_PSQL_ADMINISTRATOR_LOGIN_PASSWORD:           
+          required: true
 
 jobs:
   deploy-to-azure:
@@ -44,47 +64,47 @@ jobs:
 
 
 
-# Terraform Init, Validate, Plan, and Apply Main Environment
-      - name: Terraform Main Init
-        id: tf_init_Main
+# Terraform Init, Validate, Plan, and Apply Dev Environment
+      - name: Terraform Dev Init
+        id: tf_init_Dev
         run: |
           terraform init \
             -reconfigure \
-            -backend-config="storage_account_name=${{ secrets.Main_STORAGE_ACCOUNT_NAME }}" \
-            -backend-config="container_name=${{ secrets.Main_STORAGE_CONTAINER_NAME }}" \
+            -backend-config="storage_account_name=${{ secrets.DEV_STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ secrets.DEV_STORAGE_CONTAINER_NAME }}" \
             -backend-config="key=terraform.tfstate" \
-            -backend-config="access_key=${{ secrets.Main_STORAGE_ACCESS_KEY }}"
-        if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '/infrastructure'
+            -backend-config="access_key=${{ secrets.DEV_STORAGE_ACCESS_KEY }}"
+        if: steps.branch_check.outputs.branch == 'dev' # This defines how the step will only run if the branch name is Main
+        working-directory: './Infrastructure'
 
  # This terraform init will use a preconfigured Azure storage account to store the tfstate
 
-      - name: Terraform Main Validate
-        id: tf_validate_Main
+      - name: Terraform Dev Validate
+        id: tf_validate_Dev
         run: |
           terraform validate -no-color
-        if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '/infrastructure'
+        if: steps.branch_check.outputs.branch == 'dev' # This defines how the step will only run if the branch name is Main
+        working-directory: './Infrastructure'
 
 
 
-      - name: Terraform Main Plan
-        id: tf_plan_Main
+      - name: Terraform Dev Plan
+        id: tf_plan_Dev
         run: |
-          export TF_VAR_client_id=${{ secrets.Main_ARM_CLIENT_ID }}
-          export TF_VAR_client_secret=${{ secrets.Main_ARM_CLIENT_SECRET }}
-          export TF_VAR_tenant_id=${{ secrets.Main_ARM_TENANT_ID }}
-          export TF_VAR_subscription_id=${{ secrets.Main_ARM_SUBSCRIPTION_ID }}
-          export TF_VAR_admin_login=${{ secrets.Main_PSQL_ADMINISTRATOR_LOGIN_PASSWORD }}
-          export TF_VAR_administrator_login_password=${{ secrets.Main_PSQL_ADMIN_LOGIN }}
-          terraform plan --var-file=terraform-Main.tfvars -no-color -out=plan.tfdata
-        if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '/infrastructure'
+          export TF_VAR_client_id=${{ secrets.DEV_ARM_CLIENT_ID }}
+          export TF_VAR_client_secret=${{ secrets.DEV_ARM_CLIENT_SECRET }}
+          export TF_VAR_tenant_id=${{ secrets.DEV_ARM_TENANT_ID }}
+          export TF_VAR_subscription_id=${{ secrets.DEV_ARM_SUBSCRIPTION_ID }}
+          export TF_VAR_admin_login=${{ secrets.DEV_PSQL_ADMINISTRATOR_LOGIN_PASSWORD }}
+          export TF_VAR_administrator_login_password=${{ secrets.DEV_PSQL_ADMIN_LOGIN }}
+          terraform plan --var-file=terraform-dev.tfvars -no-color -out=plan.tfdata
+        if: steps.branch_check.outputs.branch == 'dev' # This defines how the step will only run if the branch name is Main
+        working-directory: './Infrastructure'
 
  # This terraform plan exports the GitHub secrets and uses TF_VAR so the terraform files can use the variable values. The plan is also output to plan.tfdata for apply later
 
       - name: Terraform Apply
         run: terraform apply -auto-approve plan.tfdata # Use the previous terraform plan output to apply
-        if: steps.branch_check.outputs.branch == 'Main' # This defines how the step will only run if the branch name is Main
-        working-directory: '/infrastructure'
+        if: steps.branch_check.outputs.branch == 'dev' # This defines how the step will only run if the branch name is Main
+        working-directory: './Infrastructure'
 
