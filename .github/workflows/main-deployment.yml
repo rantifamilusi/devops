@@ -6,7 +6,7 @@ on:
       - dev
 jobs:
   build-api-image-push-to-acr:
-    uses: /.github/workflows/build-dev-image.yml
+    uses: ./.github/workflows/build-dev-image.yml
   deploy-infra-with-terraform:
     needs: [build-api-image-push-to-acr]
     uses: ./.github/workflows/terraform-apply.yml
