@@ -7,7 +7,7 @@ metadata:
     environment: "development"   
      
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       name: weather-api
@@ -25,6 +25,4 @@ spec:
         - image: ibmdevopsdemo.azurecr.io/weather-api:latest
           name: weather-api
           imagePullPolicy: Always
-      imagePullSecrets:
-        - name: acr-secret-name
       restartPolicy: Always
