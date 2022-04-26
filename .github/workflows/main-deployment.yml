@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - main
 jobs:
   build-api-image-push-to-acr:
     uses: ./.github/workflows/build-dev-image.yml
