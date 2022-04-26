@@ -10,11 +10,11 @@ spec:
   rules:
     http:
       paths:
-      - path: /
+      - path: /weather
         pathType: Prefix
         backend:
           service:
-            name: weather-api-service
+            name: weather-api-svc
             port:
               number: 8080
           
