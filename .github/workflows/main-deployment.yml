@@ -7,6 +7,9 @@ on:
 jobs:
   build-api-image-push-to-acr:
     uses: ./.github/workflows/build-dev-image.yml
+    secrets:
+      DEV_ACR_SP_ID: ${{ secrets.DEV_ACR_SP_ID }}
+      DEV_ACR_SP_PASSWORD: ${{ secrets.DEV_ACR_SP_PASSWORD }}
   deploy-infra-with-terraform:
     needs: [build-api-image-push-to-acr]
     uses: ./.github/workflows/terraform-apply.yml

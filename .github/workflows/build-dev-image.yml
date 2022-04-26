@@ -2,6 +2,11 @@ name: Build & Push Image
 
 on:
   workflow_call:
+    secrets:
+      DEV_ACR_SP_ID:
+        required: true
+      DEV_ACR_SP_PASSWORD:
+        required: true 
   # push:
   #   branches:
   #     - dev
