@@ -35,15 +35,6 @@ namespace SampleApp.Api.Controllers
             })
             .ToList();
 
-
-            //UNCOMMENT BELOW TO FAIL TEST 
-            //var newlyAddedObject = new WeatherForecast
-            //{
-            //    Summary = "Hey im new here"
-            //};
-
-            //weatherArray.Add(newlyAddedObject);
-
             return weatherArray;
         }
     }
