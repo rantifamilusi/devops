@@ -1,21 +1,30 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
-WORKDIR /app
-EXPOSE 80
-
+# Use Microsoft's official build .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-sdk/
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
-WORKDIR /src
-COPY . .
-RUN ls
-RUN dotnet restore "SampleApp.Api.csproj"
-#WORKDIR "/src/SampleApp/SampleApp.Api"
-RUN dotnet build "SampleApp.Api.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "SampleApp.Api.csproj" -c Release -o /app/publish
-
-FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Install production dependencies.
+# Copy csproj and restore as distinct layers.
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy local code to the container image.
+COPY . ./
+WORKDIR /app
+
+# Build a release artifact.
+RUN dotnet publish -c Release -o out
+
+# Use Microsoft's official runtime .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
+
+# Make sure the app binds to port 8080
+ENV ASPNETCORE_URLS http://*:8080
+
+# Run the web service on container startup.
 ENTRYPOINT ["dotnet", "SampleApp.Api.dll"]

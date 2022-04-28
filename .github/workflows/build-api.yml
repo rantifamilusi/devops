@@ -1,4 +1,4 @@
-name: Build API & Unit Test
+name: Build_API_Unit_Test
 
 on: 
   pull_request:
