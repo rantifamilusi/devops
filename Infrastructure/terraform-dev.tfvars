@@ -46,4 +46,4 @@ ssl_minimal_tls_version_enforced = "TLS1_2"
 
 sql_db_name  = "Test-dev-DB"
 db_charset   = "UTF8"
-db_collation = "ENGLISH_United States.1252"
+db_collation = "English_United States.1252"
