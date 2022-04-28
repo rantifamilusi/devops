@@ -43,6 +43,8 @@ namespace SampleApp.Api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SampleApp.Api v1"));
             }
 
+            app.UseFileServer();
+
             app.UseRouting();
 
             app.UseAuthorization();
