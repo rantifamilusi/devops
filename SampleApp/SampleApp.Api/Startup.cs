@@ -31,7 +31,6 @@ namespace SampleApp.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SampleApp.Api", Version = "v1" });
             });
-            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,12 +44,6 @@ namespace SampleApp.Api
             }
 
             app.UseFileServer();
-            app.UseCors(x => x
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .SetIsOriginAllowed(origin => true)
-                    .AllowCredentials());
-
             app.UseRouting();
 
             app.UseAuthorization();
