@@ -13,7 +13,7 @@ namespace SampleApp.Api.Controllers
     {
         private static readonly string[] Summaries = new[]
         {
-            "Monday -> Freezing", "Tuesday -> Sweltering", "Wednesday -> Chilly", "Thursday -> Mild"/*, "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"*/
+            "Monday -> Freezing", "Tuesday -> Sweltering", "Wednesday -> Chilly", "Thursday -> Mild"/*, "Friday -> Muggy"*/
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
@@ -21,6 +21,12 @@ namespace SampleApp.Api.Controllers
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
+        }
+
+        [HttpPost]
+        public IEnumerable<WeatherForecast> Post()
+        {
+            throw new NotImplementedException();
         }
 
         [HttpGet]
@@ -34,6 +40,11 @@ namespace SampleApp.Api.Controllers
                 Summary = Summaries[index]
             })
             .ToList();
+
+            weatherArray.Add(new WeatherForecast
+            {
+                Summary = "Friday -> Muggy"
+            });
 
             return weatherArray;
         }
