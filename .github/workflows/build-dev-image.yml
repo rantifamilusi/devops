@@ -12,7 +12,7 @@ on:
   #     - dev
 env:
   REGISTRY_NAME: ibmdevopsdemo
-  APP_NAME: weather-api
+  APP_NAME: weather-app
 jobs:
   build-image-weather-api:
     runs-on: ubuntu-latest
