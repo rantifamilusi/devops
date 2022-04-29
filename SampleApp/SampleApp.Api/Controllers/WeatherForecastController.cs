@@ -13,7 +13,7 @@ namespace SampleApp.Api.Controllers
     {
         private static readonly string[] Summaries = new[]
         {
-            "Monday -> Freezing", "Tuesday -> Sweltering", "Wednesday -> Chilly", "Thursday -> Mild"/*, "Friday -> Muggy"*/
+            "Monday -> Freezing", "Tuesday -> Sweltering", "Wednesday -> Chilly", "Thursday -> Mild", "Friday -> Muggy"
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
@@ -33,18 +33,13 @@ namespace SampleApp.Api.Controllers
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
-            var weatherArray = Enumerable.Range(0, 4).Select(index => new WeatherForecast
+            var weatherArray = Enumerable.Range(0, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
                 Summary = Summaries[index]
             })
             .ToList();
-
-            weatherArray.Add(new WeatherForecast
-            {
-                Summary = "Friday -> Muggy"
-            });
 
             return weatherArray;
         }
