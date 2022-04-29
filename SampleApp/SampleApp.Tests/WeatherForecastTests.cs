@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Newtonsoft.Json;
 using SampleApp.Api;
 using System;
 using System.Collections.Generic;
@@ -57,5 +58,15 @@ namespace SampleApp.Tests
             var response = await _client.GetAsync("/weatherforecast");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
+
+        [Fact]
+        public async Task GET_retrieves_weather_forecast_and_checks_the_datas_correct()
+        {
+            var response = await _client.GetAsync("/weatherforecast");
+            string data = await response.Content.ReadAsStringAsync();
+            var corruptWeatherForecastData = JsonConvert.DeserializeObject<List<WeatherForecast>>(data).FirstOrDefault(i => i.TemperatureC == 0);
+            corruptWeatherForecastData.Should().BeNull();
+        }
+
     }
 }
