@@ -9,11 +9,13 @@
     <title>DevOps Rocks</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        const url = "http://localhost:5000/weatherforecast";
-
         (async () => {
-        const response = await fetch(url);
-        const data = await response.json();
+       
+            const response = await fetch('weatherforecast', {
+            mode: 'no-cors', 
+             credentials: 'include'
+         });
+         const data = await response.json();
         console.log(data);
         $.each(data, function (i, j) {
             console.log(j.summary);
