@@ -10,7 +10,7 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      name: weather-api
+      name: weather-app
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -22,7 +22,7 @@ spec:
         name: weather-app
     spec:
       containers:
-        - image: ibmdevopsdemo.azurecr.io/weather-api:latest
+        - image: ibmdevopsdemo.azurecr.io/weather-app:latest
           name: weather-app
           imagePullPolicy: Always
       restartPolicy: Always
